@@ -42,9 +42,6 @@ export class IINAMonitor extends EventEmitter {
     this.statusPaths = this.getStatusPaths();
     this.activeStatusFile = null;
     this.lastFileData = null;
-    
-    // Debug logging toggle (can be enabled via config)
-    this.debugMode = config.iinaDebugMode || false;
   }
 
   checkPlatformSupport() {
@@ -116,9 +113,7 @@ export class IINAMonitor extends EventEmitter {
 
   start() {
     if (!this.isSupported) {
-      if (this.debugMode) {
-        console.log('🔍 IINA monitor: Cannot start - not supported on this platform');
-      }
+      console.log('IINA monitor: Not supported on this platform (macOS only)');
       this.currentStatus.connected = false;
       this.emit('statusUpdate', this.getCurrentStatus());
       return;
@@ -128,18 +123,16 @@ export class IINAMonitor extends EventEmitter {
       clearInterval(this.interval);
     }
     
-    // Log status paths for debugging
-    if (this.debugMode) {
-      console.log('🔍 IINA monitor: Watching paths:');
-      this.statusPaths.forEach(p => console.log(`   - ${p}`));
-    }
+    // Log status file locations on startup so user knows where to check
+    console.log(`IINA monitor started - watching for status file at:`);
+    console.log(`  Primary: ${this.statusPaths[0]}`);
+    console.log(`  (+ ${this.statusPaths.length - 1} additional locations)`);
     
     // Start file watching
     this.startFileWatching();
     
     // Also poll files periodically as backup
     this.interval = setInterval(() => this.pollStatusFiles(), this.config.pollingInterval || 2000);
-    console.log(`✅ IINA monitor started (polling every ${this.config.pollingInterval || 2000}ms)`);
     
     // Poll immediately on start
     this.pollStatusFiles();
@@ -224,15 +217,15 @@ export class IINAMonitor extends EventEmitter {
         // Successfully read from this file, mark it as active
         if (this.activeStatusFile !== filePath) {
           this.activeStatusFile = filePath;
-          console.log(`IINA status source: ${filePath}`);
+          console.log(`✅ IINA connected - reading from: ${filePath}`);
         }
         return; // Stop checking other files once we find a valid one
       }
     }
     
-    // No valid status files found
+    // No valid status files found - don't spam, we already logged paths on startup
     if (this.currentStatus.connected) {
-      console.log('IINA status files not found or invalid');
+      console.log('IINA disconnected - status file not found');
       this.currentStatus.connected = false;
       this.currentStatus.playing = false;
       this.currentStatus.paused = false;
@@ -252,21 +245,14 @@ export class IINAMonitor extends EventEmitter {
       
       const stat = fs.statSync(filePath);
       const currentTime = Date.now();
-      const fileAge = currentTime - stat.mtime.getTime();
       
       // Check if file is recent (within last 10 seconds)
-      if (fileAge > 10000) {
-        if (this.debugMode && this.activeStatusFile === filePath) {
-          console.log(`🔍 IINA: Status file too old (${Math.floor(fileAge / 1000)}s): ${filePath}`);
-        }
+      if (currentTime - stat.mtime.getTime() > 10000) {
         return false; // File is too old
       }
       
       const fileContent = fs.readFileSync(filePath, 'utf8').trim();
       if (!fileContent) {
-        if (this.debugMode) {
-          console.log(`🔍 IINA: Status file is empty: ${filePath}`);
-        }
         return false;
       }
       
@@ -282,28 +268,13 @@ export class IINAMonitor extends EventEmitter {
       
       // Validate required fields
       if (!statusData || typeof statusData !== 'object') {
-        if (this.debugMode) {
-          console.log(`🔍 IINA: Invalid status data in: ${filePath}`);
-        }
         return false;
-      }
-      
-      if (this.debugMode) {
-        console.log(`✅ IINA: Read status from ${filePath}:`, {
-          state: statusData.state,
-          filename: statusData.filename,
-          time: statusData.time,
-          length: statusData.length
-        });
       }
       
       return this.processStatusData(statusData);
       
     } catch (error) {
-      // Only log JSON parse errors in debug mode
-      if (this.debugMode && error.name === 'SyntaxError') {
-        console.log(`🔍 IINA: JSON parse error in ${filePath}: ${error.message}`);
-      }
+      // Silently ignore parse errors (file might be being written)
       return false;
     }
   }

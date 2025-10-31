@@ -30,8 +30,6 @@ const mediaConfig = configManager.getMediaSourceConfig();
 if (process.env.VLC_HOST) mediaConfig.vlcHost = process.env.VLC_HOST;
 if (process.env.VLC_PORT) mediaConfig.vlcPort = process.env.VLC_PORT;
 if (process.env.VLC_PASSWORD) mediaConfig.vlcPassword = process.env.VLC_PASSWORD;
-if (process.env.IINA_DEBUG_MODE) mediaConfig.iinaDebugMode = process.env.IINA_DEBUG_MODE === 'true';
-if (process.env.VLC_PASSWORD) mediaConfig.vlcPassword = process.env.VLC_PASSWORD;
 if (process.env.DISCORD_CLIENT_ID) mediaConfig.discordClientId = process.env.DISCORD_CLIENT_ID;
 if (process.env.TMDB_API_KEY) mediaConfig.tmdbApiKey = process.env.TMDB_API_KEY;
 

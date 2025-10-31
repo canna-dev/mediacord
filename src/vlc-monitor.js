@@ -28,12 +28,7 @@ export class VLCMonitor extends EventEmitter {
     this.tmdbClient = new TMDbClient(config.tmdbApiKey);
     this.lastMetadataLookup = '';
     this.metadataCache = new Map();
-    
-    // Error tracking to reduce log spam
-    this.lastErrorType = null;
-    this.errorCount = 0;
-    this.lastErrorTime = 0;
-    this.ERROR_LOG_COOLDOWN = 30000; // Only log same error type once per 30 seconds
+    this.hasLoggedError = false; // Track if we've already logged connection error
   }
 
   updateConfig(config) {
@@ -283,52 +278,18 @@ export class VLCMonitor extends EventEmitter {
     } catch (error) {
       // If we were previously connected, log the disconnect
       if (this.currentStatus.connected) {
-        console.error('VLC connection lost:', error.message);
+        console.error('VLC connection lost');
         this.currentStatus.connected = false;
         this.currentStatus.playing = false;
         this.currentStatus.paused = false;
         this.emit('statusUpdate', this.getCurrentStatus());
-        
-        // Reset error tracking on disconnect
-        this.lastErrorType = null;
-        this.errorCount = 0;
-      } else {
-        // Determine error type
-        let errorType = 'unknown';
-        if (error.code === 'ECONNREFUSED') {
-          errorType = 'ECONNREFUSED';
-        } else if (error.response && error.response.status === 401) {
-          errorType = 'AUTH_FAILED';
-        } else if (error.code === 'ETIMEDOUT' || error.code === 'ECONNABORTED') {
-          errorType = 'TIMEOUT';
-        }
-        
-        // Only log if enough time has passed since last error of this type
-        const now = Date.now();
-        const shouldLog = (
-          this.lastErrorType !== errorType || 
-          (now - this.lastErrorTime) > this.ERROR_LOG_COOLDOWN
-        );
-        
-        if (shouldLog) {
-          if (errorType === 'ECONNREFUSED') {
-            console.error('⚠️  VLC not detected - Make sure VLC is running with HTTP interface enabled');
-            console.error('   Run "npm run test-vlc" for setup help');
-          } else if (errorType === 'AUTH_FAILED') {
-            console.error('⚠️  VLC authentication failed - Check your password in settings');
-          } else if (errorType === 'TIMEOUT') {
-            console.error('⚠️  VLC connection timeout - VLC might be busy');
-          } else {
-            console.error('⚠️  VLC connection error:', error.message);
-          }
-          
-          this.lastErrorType = errorType;
-          this.lastErrorTime = now;
-          this.errorCount = 1;
-        } else {
-          this.errorCount++;
-        }
+        this.hasLoggedError = false; // Reset so we can log again if it reconnects then fails
+      } else if (!this.hasLoggedError) {
+        // Only log once when initially unable to connect
+        console.error('VLC not connected - Make sure VLC is running with HTTP interface enabled');
+        this.hasLoggedError = true;
       }
+      // Silently fail on subsequent polls to avoid spam
     }
   }
   
