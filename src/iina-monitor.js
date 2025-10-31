@@ -42,6 +42,9 @@ export class IINAMonitor extends EventEmitter {
     this.statusPaths = this.getStatusPaths();
     this.activeStatusFile = null;
     this.lastFileData = null;
+    
+    // Debug logging toggle (can be enabled via config)
+    this.debugMode = config.iinaDebugMode || false;
   }
 
   checkPlatformSupport() {
@@ -113,7 +116,9 @@ export class IINAMonitor extends EventEmitter {
 
   start() {
     if (!this.isSupported) {
-      console.log('IINA monitor: Cannot start - not supported on this platform');
+      if (this.debugMode) {
+        console.log('🔍 IINA monitor: Cannot start - not supported on this platform');
+      }
       this.currentStatus.connected = false;
       this.emit('statusUpdate', this.getCurrentStatus());
       return;
@@ -123,12 +128,18 @@ export class IINAMonitor extends EventEmitter {
       clearInterval(this.interval);
     }
     
+    // Log status paths for debugging
+    if (this.debugMode) {
+      console.log('🔍 IINA monitor: Watching paths:');
+      this.statusPaths.forEach(p => console.log(`   - ${p}`));
+    }
+    
     // Start file watching
     this.startFileWatching();
     
     // Also poll files periodically as backup
     this.interval = setInterval(() => this.pollStatusFiles(), this.config.pollingInterval || 2000);
-    console.log(`IINA monitor started, watching ${this.statusPaths.length} potential status file locations`);
+    console.log(`✅ IINA monitor started (polling every ${this.config.pollingInterval || 2000}ms)`);
     
     // Poll immediately on start
     this.pollStatusFiles();
@@ -241,14 +252,21 @@ export class IINAMonitor extends EventEmitter {
       
       const stat = fs.statSync(filePath);
       const currentTime = Date.now();
+      const fileAge = currentTime - stat.mtime.getTime();
       
       // Check if file is recent (within last 10 seconds)
-      if (currentTime - stat.mtime.getTime() > 10000) {
+      if (fileAge > 10000) {
+        if (this.debugMode && this.activeStatusFile === filePath) {
+          console.log(`🔍 IINA: Status file too old (${Math.floor(fileAge / 1000)}s): ${filePath}`);
+        }
         return false; // File is too old
       }
       
       const fileContent = fs.readFileSync(filePath, 'utf8').trim();
       if (!fileContent) {
+        if (this.debugMode) {
+          console.log(`🔍 IINA: Status file is empty: ${filePath}`);
+        }
         return false;
       }
       
@@ -264,13 +282,28 @@ export class IINAMonitor extends EventEmitter {
       
       // Validate required fields
       if (!statusData || typeof statusData !== 'object') {
+        if (this.debugMode) {
+          console.log(`🔍 IINA: Invalid status data in: ${filePath}`);
+        }
         return false;
+      }
+      
+      if (this.debugMode) {
+        console.log(`✅ IINA: Read status from ${filePath}:`, {
+          state: statusData.state,
+          filename: statusData.filename,
+          time: statusData.time,
+          length: statusData.length
+        });
       }
       
       return this.processStatusData(statusData);
       
     } catch (error) {
-      // Silently ignore parse errors (file might be being written)
+      // Only log JSON parse errors in debug mode
+      if (this.debugMode && error.name === 'SyntaxError') {
+        console.log(`🔍 IINA: JSON parse error in ${filePath}: ${error.message}`);
+      }
       return false;
     }
   }

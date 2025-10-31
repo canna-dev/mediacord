@@ -9,6 +9,7 @@
     "dev": "nodemon src/main.js --ignore public/",
     "test": "node test-platform.js",
     "test:compat": "node test-platform.js",
+    "test:iina": "node test-iina.js",
     "health": "node -e \"fetch('http://localhost:7100/health').then(r=>r.json()).then(console.log)\"",
     "lint": "echo 'Linting not configured yet'"
   },
