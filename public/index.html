@@ -175,16 +175,28 @@
                 <h2>MediaCord Setup Instructions</h2>
                 
                 <section class="modal-section">
-                    <h3>VLC Setup</h3>
+                    <h3>Media Player Setup</h3>
+                    <p>MediaCord supports multiple media players. Choose the one that works best for you:</p>
+                    
+                    <h4>Option 1: VLC Media Player (All Platforms)</h4>
                     <p>Enable VLC's HTTP interface by adding these parameters when launching VLC:</p>
                     <pre><code>--intf http --http-host localhost --http-port 8080 --http-password vlcpassword</code></pre>
-                    <p>In VLC, you can also go to:</p>
+                    <p>Or configure via VLC Preferences:</p>
                     <ol>
                         <li>Tools → Preferences</li>
                         <li>Show all settings (bottom left)</li>
                         <li>Interface → Main interfaces → Check "Web"</li>
                         <li>Interface → Main interfaces → Lua → Lua HTTP → Set your password</li>
                     </ol>
+                    
+                    <h4>Option 2: IINA (macOS Only)</h4>
+                    <ol>
+                        <li>Install IINA from <a href="https://iina.io/" target="_blank" rel="noopener">iina.io</a></li>
+                        <li>Download the <a href="https://github.com/canna-dev/iina-status-bridge/releases" target="_blank" rel="noopener">iina-status-bridge plugin</a></li>
+                        <li>Double-click the <code>.iinaplugin</code> file to install</li>
+                        <li>Restart IINA - MediaCord will automatically detect it!</li>
+                    </ol>
+                    <p><strong>Note:</strong> You can use both players! MediaCord will automatically switch between them.</p>
                 </section>
                 
                 <section class="modal-section">
@@ -196,6 +208,7 @@
                         <li>Under Rich Presence → Art Assets, upload these images:
                             <ul>
                                 <li><strong>vlc</strong> - VLC logo</li>
+                                <li><strong>iina</strong> - IINA logo (optional)</li>
                                 <li><strong>mediacord</strong> - MediaCord logo</li>
                                 <li><strong>play</strong> - Play icon</li>
                                 <li><strong>pause</strong> - Pause icon</li>
@@ -205,7 +218,8 @@
                 </section>
                 
                 <section class="modal-section">
-                    <h3>TMDb Setup</h3>
+                    <h3>TMDb Setup (Optional)</h3>
+                    <p>MediaCord includes a shared API key, but you can use your own for better performance:</p>
                     <ol>
                         <li>Sign up at <a href="https://www.themoviedb.org/" target="_blank" rel="noopener">TheMovieDB</a></li>
                         <li>Go to Settings → API → Create new API key</li>

@@ -249,6 +249,24 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Helper Functions
+    function getSourceInfo(sourceName) {
+        const sourceMap = {
+            'vlc': {
+                displayName: 'VLC Media Player',
+                icon: 'assets/vlc.png'
+            },
+            'iina': {
+                displayName: 'IINA',
+                icon: 'assets/iina.png'
+            }
+        };
+        
+        return sourceMap[sourceName] || {
+            displayName: 'Media Player',
+            icon: 'assets/vlc.png'
+        };
+    }
+
     function showNotification(message, type = 'info') {
         // Remove existing notifications
         const existingNotifications = document.querySelectorAll('.notification');
@@ -305,6 +323,21 @@ document.addEventListener('DOMContentLoaded', function() {
             const sourceInfo = getSourceInfo(status.source);
             mediaSourceName.textContent = sourceInfo.displayName;
             mediaSourceIcon.src = sourceInfo.icon;
+            
+            // Update type info to show which source is active
+            if (status.connected) {
+                if (status.playing) {
+                    mediaSourceType.textContent = `Playing (${sourceInfo.displayName})`;
+                } else if (status.paused) {
+                    mediaSourceType.textContent = `Paused (${sourceInfo.displayName})`;
+                } else {
+                    mediaSourceType.textContent = `Connected (${sourceInfo.displayName})`;
+                }
+            }
+        } else {
+            // No active source
+            mediaSourceName.textContent = 'Media Player';
+            mediaSourceIcon.src = 'assets/vlc.png';
         }
         
         // Update connection status
@@ -312,14 +345,6 @@ document.addEventListener('DOMContentLoaded', function() {
             if (status.connected) {
                 mediaSourceText.textContent = 'Connected';
                 mediaSourceText.className = 'status-connected';
-                
-                if (status.playing) {
-                    mediaSourceType.textContent = 'Playing';
-                } else if (status.paused) {
-                    mediaSourceType.textContent = 'Paused';
-                } else {
-                    mediaSourceType.textContent = 'Idle';
-                }
             } else {
                 mediaSourceText.textContent = 'Disconnected';
                 mediaSourceText.className = 'status-disconnected';
@@ -379,20 +404,6 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
             resetMediaDisplay();
         }
-    }
-    
-    function getSourceInfo(sourceName) {
-        const sourceMap = {
-            'vlc': {
-                displayName: 'VLC Media Player',
-                icon: 'assets/vlc.png'
-            },
-            'iina': {
-                displayName: 'IINA',
-                icon: 'assets/vlc.png' // Use VLC icon as fallback, add IINA icon later
-            }
-        };
-        return sourceMap[sourceName] || { displayName: 'Media Player', icon: 'assets/vlc.png' };
     }
     
     function updateSourceSelection() {
