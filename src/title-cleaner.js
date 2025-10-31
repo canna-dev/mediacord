@@ -1,5 +1,5 @@
 /**
- * VLCord Enhanced Title Cleaner
+ * MediaCord Enhanced Title Cleaner
  * Combines functionality from various cleaner modules into a unified system
  */
 

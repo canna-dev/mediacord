@@ -1,24 +1,29 @@
 {
-  "name": "vlcord",
-  "version": "1.0.0",
-  "description": "Discord Rich Presence integration for VLC Media Player with automatic movie/TV show detection",
+  "name": "mediacord",
+  "version": "2.0.0",
+  "description": "Universal Discord Rich Presence for VLC, IINA, and other media players with automatic movie/TV show detection",
   "main": "src/main.js",
   "type": "module",
   "scripts": {
     "start": "node src/main.js",
     "dev": "nodemon src/main.js --ignore public/",
-    "lint": "echo 'Linting not configured yet'",
-    "test": "echo 'Tests not configured yet'"
+    "test": "node test-platform.js",
+    "test:compat": "node test-platform.js",
+    "health": "node -e \"fetch('http://localhost:7100/health').then(r=>r.json()).then(console.log)\"",
+    "lint": "echo 'Linting not configured yet'"
   },
   "keywords": [
     "discord",
     "vlc",
-    "rich-presence",
+    "iina",
     "media-player",
+    "rich-presence",
     "tmdb",
     "rpc",
     "automation",
-    "entertainment"
+    "entertainment",
+    "macos",
+    "universal"
   ],
   "author": {
     "name": "canna-dev",
@@ -27,24 +32,24 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/canna-dev/vlcord.git"
+    "url": "https://github.com/canna-dev/mediacord.git"
   },
   "bugs": {
-    "url": "https://github.com/canna-dev/vlcord/issues"
+    "url": "https://github.com/canna-dev/mediacord/issues"
   },
-  "homepage": "https://github.com/canna-dev/vlcord#readme",
+  "homepage": "https://github.com/canna-dev/mediacord#readme",
   "dependencies": {
-    "axios": "^1.6.2",
+    "axios": "^1.7.9",
     "cors": "^2.8.5",
     "discord-rpc": "^4.0.1",
-    "dotenv": "^16.3.1",
-    "express": "^4.18.2",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
     "node-fetch": "^3.3.2",
     "parse-torrent-name": "^0.5.4",
     "socket.io": "^4.8.1"
   },
   "devDependencies": {
-    "nodemon": "^3.0.2"
+    "nodemon": "^3.1.10"
   },
   "engines": {
     "node": ">=18.0.0"

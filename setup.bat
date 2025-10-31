@@ -1,6 +1,6 @@
 @echo off
 echo =====================================
-echo       VLCord Setup for Windows
+echo       MediaCord Setup for Windows
 echo =====================================
 echo.
 
@@ -49,16 +49,16 @@ REM Check if .env file exists
 if not exist ".env" (
     echo.
     echo 📝 Creating .env file from template...
-    echo # VLCord Configuration > .env
-    echo # Default project keys included - personal keys recommended for better performance >> .env
+    echo # MediaCord Configuration > .env
+    echo # Default TMDb API key included - get your own for better performance >> .env
     echo TMDB_API_KEY=ccc1fa36a0821299ae4d7a6c155b442d >> .env
-    echo DISCORD_CLIENT_ID=1392902149163319398 >> .env
+    echo DISCORD_CLIENT_ID=YOUR_DISCORD_CLIENT_ID_HERE >> .env
     echo PORT=3000 >> .env
     echo VLC_HOST=localhost >> .env
     echo VLC_PORT=8080 >> .env
     echo VLC_PASSWORD=vlcpassword >> .env
     echo.
-    echo 🚀 VLCord works with default keys, but HERE'S WHY you should get your own:
+    echo 🚀 MediaCord requires you to set up your own Discord Application:
     echo.
     echo 💡 TMDb API Key Benefits:
     echo    ✅ No rate limits - unlimited movie/show lookups
@@ -67,7 +67,7 @@ if not exist ".env" (
     echo    ✅ FREE and takes 2 minutes: https://www.themoviedb.org/settings/api
     echo.
     echo 🎮 Discord Client ID Benefits:
-    echo    ✅ Custom app name in Discord - "YourName's VLCord" instead of generic
+    echo    ✅ Custom app name in Discord - "YourName's MediaCord" instead of generic
     echo    ✅ Your own app icon and branding
     echo    ✅ Independent from shared app quotas
     echo    ✅ FREE at: https://discord.com/developers/applications
@@ -80,7 +80,7 @@ echo 🎯 Setup complete! Next steps:
 echo.
 echo 1. Configure your .env file with API keys
 echo 2. Enable VLC Web Interface (see docs/vlc-connection-guide.md)
-echo 3. Run 'npm start' to launch VLCord
+echo 3. Run 'npm start' to launch MediaCord
 echo.
 echo 📚 For detailed setup instructions, see README.md
 echo.

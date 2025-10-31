@@ -65,7 +65,7 @@ export class VLCSetupHelper {
       paths.push(
         'C:\\Program Files\\VideoLAN\\VLC\\vlc.exe',
         'C:\\Program Files (x86)\\VideoLAN\\VLC\\vlc.exe',
-        path.join(os.homedir(), 'AppData\\Local\\Programs\\VLC\\vlc.exe')
+        path.join(os.homedir(), 'AppData', 'Local', 'Programs', 'VLC', 'vlc.exe')
       );
     } else if (platform === 'darwin') {
       paths.push(
@@ -86,27 +86,27 @@ export class VLCSetupHelper {
     if (platform === 'win32') {
       return {
         type: 'batch',
-        filename: 'VLCord-VLC.bat',
+        filename: 'MediaCord-VLC.bat',
         content: `@echo off
-echo Starting VLC with HTTP interface for VLCord...
+echo Starting VLC with HTTP interface for MediaCord...
 "C:\\Program Files\\VideoLAN\\VLC\\vlc.exe" ${args}
 pause`
       };
     } else if (platform === 'darwin') {
       return {
         type: 'script',
-        filename: 'VLCord-VLC.command',
+        filename: 'MediaCord-VLC.command',
         content: `#!/bin/bash
-echo "Starting VLC with HTTP interface for VLCord..."
+echo "Starting VLC with HTTP interface for MediaCord..."
 /Applications/VLC.app/Contents/MacOS/VLC ${args}
 read -p "Press Enter to exit..."`
       };
     } else {
       return {
         type: 'script',
-        filename: 'VLCord-VLC.sh',
+        filename: 'MediaCord-VLC.sh',
         content: `#!/bin/bash
-echo "Starting VLC with HTTP interface for VLCord..."
+echo "Starting VLC with HTTP interface for MediaCord..."
 vlc ${args}
 read -p "Press Enter to exit..."`
       };

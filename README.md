@@ -1,17 +1,25 @@
-# VLCord
+# MediaCord
 
-![VLCord Logo](assets/logo.png)
+![MediaCord Logo](assets/logo.png)
 
-**VLCord** is a Discord Rich Presence integration for VLC Media Player that automatically displays what you're watching on Discord. It features a clean web interface, automatic movie/TV show detection with TMDb integration, and real-time status updates.
+**MediaCord** is a Universal Discord Rich Presence integration for multiple media players (VLC, IINA) that automatically displays what you're watching on Discord. It features a clean web interface, automatic movie/TV show detection with TMDb integration, real-time status updates, and intelligent multi-player support.
+
+> **Note**: MediaCord is the evolution of [VLCord](https://github.com/canna-dev/vlcord), expanding from VLC-only support to a universal multi-player solution with cross-platform compatibility.
 
 ## ✨ Features
 
-- 🎬 **Automatic Media Detection** - Recognizes movies, TV shows, and anime from filenames
+- 🎬 **Multi-Player Support** - Works with VLC (all platforms) and IINA (macOS)
+- 🌍 **Cross-Platform** - Windows, macOS, and Linux with automatic platform detection
+- 🔄 **Automatic Source Switching** - Seamlessly switches between active media players
 - 🎭 **TMDb Integration** - Fetches rich metadata including posters, descriptions, and genres
 - 🎮 **Discord Rich Presence** - Shows detailed "Watching" status with beautiful cards
-- 🌐 **Web Interface** - Clean, modern dashboard for monitoring and configuration
+- 🌐 **Modern Web Interface** - Clean dashboard for monitoring and configuration
 - ⚡ **Real-time Updates** - Live progress tracking and play/pause status
-- 🔧 **Easy Setup** - Automated VLC configuration and Discord app creation guides
+- 🔧 **Easy Setup** - Automated configuration and setup guides
+- 🍎 **macOS Optimized** - Native IINA support with plugin integration
+- 🏥 **Health Monitoring** - Built-in health check endpoint
+- 🛡️ **Error Handling** - Robust error boundaries and graceful recovery
+- 📊 **Logging System** - Leveled logging for better debugging
 
 ## 📸 Screenshots
 
@@ -26,16 +34,23 @@
 
 ### Prerequisites
 
-- **Node.js** 18.0.0 or higher
-- **VLC Media Player** 3.0+ 
-- **Discord** account
+- **Node.js** 18.0.0 or higher ([Download](https://nodejs.org/))
+- **VLC Media Player** 3.0+ ([Windows](https://www.videolan.org/vlc/download-windows.html) | [macOS](https://www.videolan.org/vlc/download-macosx.html) | [Linux](https://www.videolan.org/vlc/#download)) OR **IINA** 1.3+ ([macOS only](https://iina.io/))
+- **Discord** desktop app
+- **Operating System**: Windows 10+, macOS 10.14+, or Linux
+
+### Quick Test
+Run the cross-platform compatibility test:
+```bash
+npm test
+```
 
 ### Installation
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/canna-dev/vlcord.git
-   cd vlcord
+   git clone https://github.com/canna-dev/mediacord.git
+   cd mediacord
    ```
 
 2. **Install dependencies**
@@ -49,20 +64,24 @@
    # Edit .env with your preferred settings
    ```
 
-4. **Start VLCord**
+4. **Start MediaCord**
    ```bash
    npm start
+   # Or use the platform-specific script:
+   # Windows: MediaCord.bat
+   # macOS/Linux: ./MediaCord.sh
    ```
 
 5. **Open the web interface**
    - Navigate to http://localhost:7100
-   - Follow the setup wizard for VLC and Discord configuration
+   - Follow the setup wizard for media player and Discord configuration
 
 ## ⚙️ Configuration
 
-### VLC Setup
+### Media Player Setup
 
-VLCord requires VLC's HTTP interface to be enabled. You can:
+**VLC (All Platforms):**
+MediaCord requires VLC's HTTP interface to be enabled. You can:
 
 1. **Use the built-in setup wizard** (recommended)
    - Open http://localhost:7100
@@ -73,11 +92,17 @@ VLCord requires VLC's HTTP interface to be enabled. You can:
    - Launch VLC with: `--intf http --http-host localhost --http-port 8080 --http-password vlcpassword`
    - Or enable via VLC Preferences → Interface → Main interfaces → Web
 
+**IINA (macOS Only):**
+1. Install the [iina-status-bridge plugin](https://github.com/canna-dev/iina-status-bridge)
+2. Double-click to install or use IINA → Preferences → Extensions
+3. Restart IINA - MediaCord will automatically detect it!
+4. See [IINA Integration Guide](IINA-INTEGRATION.md) for details
+
 ### Discord Application
 
 1. Go to [Discord Developer Portal](https://discord.com/developers/applications)
 2. Create a new application
-3. Copy the Application ID to VLCord settings
+3. Copy the Application ID to MediaCord settings
 4. Upload these assets under Rich Presence → Art Assets:
    - `vlc` - VLC logo
    - `play` - Play icon  
@@ -85,7 +110,7 @@ VLCord requires VLC's HTTP interface to be enabled. You can:
 
 ### TMDb API (optional but recommended)
 
-**VLCord works out-of-the-box with shared keys, but getting your own API key provides significant benefits:**
+**MediaCord works out-of-the-box with shared keys, but getting your own API key provides significant benefits:**
 
 #### 🚀 Why get your own TMDb API key?
 
@@ -98,24 +123,24 @@ VLCord requires VLC's HTTP interface to be enabled. You can:
 
 1. Sign up at [TheMovieDB](https://www.themoviedb.org/)
 2. Go to Settings → API → Create new API key
-3. Enter the API key in VLCord settings for enhanced metadata
+3. Enter the API key in MediaCord settings for enhanced metadata
 
-### Discord Application (optional but recommended)
+### Discord Application (Required)
 
-**VLCord includes a default Discord app, but creating your own provides customization:**
+**MediaCord requires you to create your own Discord Application:**
 
-#### 🎮 Why create your own Discord app?
+#### 🎮 Why you need your own Discord app:
 
-- **🏷️ Custom branding** - "YourName's VLCord" instead of generic name
+- **🏷️ Custom branding** - "YourName's MediaCord" instead of generic name
 - **🎨 Personal app icon** - Upload your own custom icon
-- **⚡ Independent quotas** - No sharing with other users
-- **🆓 Completely FREE** - Full control over your app
+- **⚡ Independent control** - Full control over your integration
+- **🆓 Completely FREE** - No cost to create
 
 #### 📝 Discord Setup Steps
 
 1. Go to [Discord Developer Portal](https://discord.com/developers/applications)
 2. Create a new application
-3. Copy the Application ID to VLCord settings
+3. Copy the Application ID to MediaCord settings
 4. Upload these assets under Rich Presence → Art Assets:
    - `vlc` - VLC logo
    - `play` - Play icon  
@@ -123,14 +148,22 @@ VLCord requires VLC's HTTP interface to be enabled. You can:
 
 ## 🎯 Usage
 
-1. **Start VLCord** - Run `npm start`
-2. **Open VLC** - Launch with HTTP interface enabled
+1. **Start MediaCord** - Run `npm start`
+2. **Open VLC** - Launch with HTTP interface enabled (or IINA on macOS)
 3. **Play media** - Start watching any movie or TV show
 4. **Check Discord** - Your status will automatically update
 
+### Health Check
+
+Check if MediaCord is running properly:
+```bash
+npm run health
+# or visit: http://localhost:7100/health
+```
+
 ### Supported Formats
 
-VLCord intelligently parses various filename formats:
+MediaCord intelligently parses various filename formats:
 
 - **Movies**: `Movie.Title.2023.1080p.BluRay.x264`
 - **TV Shows**: `Show.Name.S01E05.Episode.Title.1080p`
@@ -157,7 +190,7 @@ This starts the server with nodemon for automatic restarts on file changes.
 ### Project Structure
 
 ```
-vlcord/
+mediacord/
 ├── src/
 │   ├── main.js              # Main server entry point
 │   ├── vlc-monitor.js       # VLC HTTP interface integration  
@@ -227,7 +260,7 @@ All settings can be configured through the web interface:
 
 ### Getting Help
 
-1. Check the [Issues](https://github.com/canna-dev/vlcord/issues) page
+1. Check the [Issues](https://github.com/canna-dev/mediacord/issues) page
 2. Review the built-in setup instructions
 3. Use the web interface diagnostic tools
 
@@ -249,14 +282,16 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🙏 Acknowledgments
 
+- [VLCord](https://github.com/canna-dev/vlcord) - The original VLC-focused project that MediaCord is based on
 - [Discord RPC](https://github.com/discordjs/RPC) for Discord integration
 - [TMDb](https://www.themoviedb.org/) for movie/TV metadata
 - [VLC Media Player](https://www.videolan.org/vlc/) for the awesome media player
+- [IINA](https://iina.io/) for the beautiful macOS media player
 - [parse-torrent-name](https://github.com/clement-escolano/parse-torrent-name) for filename parsing
 
 ## 📞 Support
 
-If you enjoy VLCord, please consider:
+If you enjoy MediaCord, please consider:
 - ⭐ Starring this repository
 - 🐛 Reporting bugs
 - 💡 Suggesting new features

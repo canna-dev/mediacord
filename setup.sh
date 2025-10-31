@@ -1,7 +1,7 @@
 #!/bin/bash
 
 echo "====================================="
-echo "      VLCord Setup for Unix/Linux"
+echo "      MediaCord Setup for Unix/Linux"
 echo "====================================="
 echo
 
@@ -55,17 +55,17 @@ if [ ! -f ".env" ]; then
     echo
     echo -e "${BLUE}📝 Creating .env file from template...${NC}"
     cat > .env << EOF
-# VLCord Configuration
-# Default project keys included - personal keys recommended for better performance
+# MediaCord Configuration
+# Default TMDb API key included - get your own for better performance
 TMDB_API_KEY=ccc1fa36a0821299ae4d7a6c155b442d
-DISCORD_CLIENT_ID=1392902149163319398
+DISCORD_CLIENT_ID=YOUR_DISCORD_CLIENT_ID_HERE
 PORT=3000
 VLC_HOST=localhost
 VLC_PORT=8080
 VLC_PASSWORD=vlcpassword
 EOF
     echo
-    echo -e "${GREEN}🚀 VLCord works with default keys, but HERE'S WHY you should get your own:${NC}"
+    echo -e "${GREEN}🚀 MediaCord requires you to set up your own Discord Application:${NC}"
     echo
     echo -e "${BLUE}💡 TMDb API Key Benefits:${NC}"
     echo -e "   ${GREEN}✅ No rate limits${NC} - unlimited movie/show lookups"
@@ -74,7 +74,7 @@ EOF
     echo -e "   ${GREEN}✅ FREE and takes 2 minutes:${NC} https://www.themoviedb.org/settings/api"
     echo
     echo -e "${BLUE}🎮 Discord Client ID Benefits:${NC}"
-    echo -e "   ${GREEN}✅ Custom app name${NC} in Discord - \"YourName's VLCord\" instead of generic"
+    echo -e "   ${GREEN}✅ Custom app name${NC} in Discord - \"YourName's MediaCord\" instead of generic"
     echo -e "   ${GREEN}✅ Your own app icon${NC} and branding"
     echo -e "   ${GREEN}✅ Independent${NC} from shared app quotas"
     echo -e "   ${GREEN}✅ FREE at:${NC} https://discord.com/developers/applications"
@@ -90,7 +90,7 @@ echo -e "${GREEN}🎯 Setup complete! Next steps:${NC}"
 echo
 echo "1. Configure your .env file with API keys"
 echo "2. Enable VLC Web Interface (see docs/vlc-connection-guide.md)"
-echo "3. Run 'npm start' to launch VLCord"
+echo "3. Run 'npm start' to launch MediaCord"
 echo
 echo -e "${BLUE}📚 For detailed setup instructions, see README.md${NC}"
 echo

@@ -1,6 +1,6 @@
-# Contributing to VLCord
+# Contributing to MediaCord
 
-Thank you for your interest in contributing to VLCord! This document provides guidelines and information for contributors.
+Thank you for your interest in contributing to MediaCord! This document provides guidelines and information for contributors.
 
 ## 🚀 Getting Started
 
@@ -15,8 +15,8 @@ Thank you for your interest in contributing to VLCord! This document provides gu
 
 1. **Fork and clone the repository**
    ```bash
-   git clone https://github.com/canna-dev/vlcord.git
-   cd vlcord
+   git clone https://github.com/canna-dev/mediacord.git
+   cd mediacord
    ```
 
 2. **Install dependencies**
@@ -67,12 +67,12 @@ src/
 
 ### Reporting Bugs
 
-1. Check existing [issues](https://github.com/canna-dev/vlcord/issues)
+1. Check existing [issues](https://github.com/canna-dev/mediacord/issues)
 2. Create a new issue with:
    - Clear description of the problem
    - Steps to reproduce
    - Expected vs actual behavior
-   - Your environment (OS, Node.js version, VLC version)
+   - Your environment (OS, Node.js version, media player version)
    - Screenshots if applicable
 
 ### Suggesting Features
@@ -204,6 +204,6 @@ Before submitting a pull request, ensure:
 
 ## 📄 License
 
-By contributing to VLCord, you agree that your contributions will be licensed under the MIT License.
+By contributing to MediaCord, you agree that your contributions will be licensed under the MIT License.
 
-Thank you for contributing to VLCord! 🚀
+Thank you for contributing to MediaCord! 🚀

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VLCord - VLC Discord Rich Presence</title>
+    <title>MediaCord - Universal Media Player Discord Rich Presence</title>
     <link rel="icon" href="assets/icon.ico" type="image/x-icon">
     <link rel="stylesheet" href="css/styles.css">
 </head>
@@ -11,10 +11,10 @@
     <div class="app-container">
         <header class="app-header">
             <div class="logo-container">
-                <img src="assets/logo.png" alt="VLCord Logo" class="logo">
-                <h1>VLCord</h1>
+                <img src="assets/logo.png" alt="MediaCord Logo" class="logo">
+                <h1>MediaCord</h1>
             </div>
-            <p class="tagline">VLC Discord Rich Presence</p>
+            <p class="tagline">Universal Media Player Discord Rich Presence</p>
         </header>
 
         <main class="main-content">
@@ -27,11 +27,15 @@
             <!-- Overview Tab Content -->
             <div class="tab-content active" id="overview-tab">
                 <div class="status-section">
-                    <div class="status-item" id="vlc-status">
-                        <img src="assets/vlc.png" alt="VLC" class="status-icon">
+                    <div class="status-item" id="media-source-status">
+                        <img src="assets/vlc.png" alt="Media Source" class="status-icon" id="media-source-icon">
                         <div class="status-info">
-                            <h3>VLC</h3>
-                            <p id="vlc-status-text">Disconnected</p>
+                            <h3 id="media-source-name">Media Player</h3>
+                            <p id="media-source-text">Connecting...</p>
+                            <small id="media-source-type" class="status-detail">Detecting sources...</small>
+                        </div>
+                        <div class="status-controls">
+                            <button id="switch-source-btn" class="switch-btn" style="display: none;">Switch Source</button>
                         </div>
                     </div>
                     <div class="status-item" id="discord-status">
@@ -42,6 +46,14 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Media Source Selection -->
+                <section class="content-section" id="source-selection" style="display: none;">
+                    <h2>Available Media Sources</h2>
+                    <div class="source-list" id="source-list">
+                        <!-- Sources will be populated by JavaScript -->
+                    </div>
+                </section>
 
                 <section class="content-section">
                     <h2>Media Preview</h2>
@@ -71,6 +83,24 @@
                     <h2>Settings</h2>
                     <div id="settings-form">
                         <div class="settings-group">
+                            <h3>Media Source Preferences</h3>
+                            <div class="form-row">
+                                <label for="preferred-source">Preferred Source:</label>
+                                <select id="preferred-source">
+                                    <option value="auto">Auto (detect best available)</option>
+                                    <option value="vlc">VLC Media Player</option>
+                                    <option value="iina">IINA (macOS only)</option>
+                                </select>
+                            </div>
+                            <div class="form-row">
+                                <label>
+                                    <input type="checkbox" id="enable-auto-switching">
+                                    Enable automatic source switching
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="settings-group">
                             <h3>VLC Connection</h3>
                             <div class="form-row">
                                 <label for="vlc-host">Host:</label>
@@ -84,13 +114,30 @@
                                 <label for="vlc-password">Password:</label>
                                 <input type="password" id="vlc-password" value="vlcpassword">
                             </div>
+                            <div class="form-row">
+                                <label for="vlc-polling-interval">Polling Interval (ms):</label>
+                                <input type="number" id="vlc-polling-interval" value="1000" min="500" max="5000">
+                            </div>
+                        </div>
+
+                        <div class="settings-group" id="iina-settings" style="display: none;">
+                            <h3>IINA Settings</h3>
+                            <div class="form-row">
+                                <label for="iina-polling-interval">Polling Interval (ms):</label>
+                                <input type="number" id="iina-polling-interval" value="2000" min="500" max="10000">
+                            </div>
+                            <div class="form-row">
+                                <label for="iina-status-paths">Custom Status File Paths (one per line):</label>
+                                <textarea id="iina-status-paths" rows="3" placeholder="Leave empty to use default locations"></textarea>
+                                <small class="help-text">Default locations: ~/status.json, IINA plugin data directories</small>
+                            </div>
                         </div>
 
                         <div class="settings-group">
                             <h3>Discord Integration</h3>
-                            <div class="form-row">
+                            <div class="input-group">
                                 <label for="discord-client-id">Client ID:</label>
-                                <input type="text" id="discord-client-id" value="1392902149163319398">
+                                <input type="text" id="discord-client-id" placeholder="Enter your Discord Client ID">
                             </div>
                         </div>
 
@@ -114,9 +161,9 @@
         </main>
 
         <footer class="app-footer">
-            <p>VLCord - VLC Discord Rich Presence</p>
+            <p>MediaCord - Universal Media Player Discord Rich Presence</p>
             <p class="footer-links">
-                <a href="https://github.com/canna-dev/vlcord" target="_blank" rel="noopener">GitHub</a> | 
+                <a href="https://github.com/canna-dev/mediacord" target="_blank" rel="noopener">GitHub</a> | 
                 <a href="#" id="setup-instructions">Setup Instructions</a>
             </p>
         </footer>
@@ -125,7 +172,7 @@
         <div id="instructions-modal" class="modal">
             <div class="modal-content">
                 <span class="close-btn">&times;</span>
-                <h2>VLCord Setup Instructions</h2>
+                <h2>MediaCord Setup Instructions</h2>
                 
                 <section class="modal-section">
                     <h3>VLC Setup</h3>
@@ -145,11 +192,11 @@
                     <ol>
                         <li>Go to <a href="https://discord.com/developers/applications" target="_blank" rel="noopener">Discord Developer Portal</a></li>
                         <li>Create a new application</li>
-                        <li>Copy the Application ID to the Client ID field in VLCord settings</li>
+                        <li>Copy the Application ID to the Client ID field in MediaCord settings</li>
                         <li>Under Rich Presence → Art Assets, upload these images:
                             <ul>
                                 <li><strong>vlc</strong> - VLC logo</li>
-                                <li><strong>vlcord</strong> - VLCord logo</li>
+                                <li><strong>mediacord</strong> - MediaCord logo</li>
                                 <li><strong>play</strong> - Play icon</li>
                                 <li><strong>pause</strong> - Pause icon</li>
                             </ul>
@@ -162,7 +209,7 @@
                     <ol>
                         <li>Sign up at <a href="https://www.themoviedb.org/" target="_blank" rel="noopener">TheMovieDB</a></li>
                         <li>Go to Settings → API → Create new API key</li>
-                        <li>Copy the API Key (v3 auth) to the TMDb API Key field in VLCord settings</li>
+                        <li>Copy the API Key (v3 auth) to the TMDb API Key field in MediaCord settings</li>
                     </ol>
                 </section>
                 

@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to VLCord will be documented in this file.
+All notable changes to MediaCord will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
@@ -101,8 +101,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Platform Support
 
-- Windows (with VLCord.bat)
-- macOS/Linux (with VLCord.sh)
+- Windows (with MediaCord.bat)
+- macOS/Linux (with MediaCord.sh)
 - Node.js 14+ required
 
 ### Known Limitations

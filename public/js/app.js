@@ -1,11 +1,19 @@
-// VLCord Web Interface JavaScript
+// MediaCord Web Interface JavaScript
 
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize Socket.io connection
     const socket = io();
     
-    // DOM Elements
-    const vlcStatusText = document.getElementById('vlc-status-text');
+    // DOM Elements - Media Source
+    const mediaSourceText = document.getElementById('media-source-text');
+    const mediaSourceName = document.getElementById('media-source-name');
+    const mediaSourceType = document.getElementById('media-source-type');
+    const mediaSourceIcon = document.getElementById('media-source-icon');
+    const switchSourceBtn = document.getElementById('switch-source-btn');
+    const sourceSelection = document.getElementById('source-selection');
+    const sourceList = document.getElementById('source-list');
+    
+    // DOM Elements - Status and Media
     const discordStatusText = document.getElementById('discord-status-text');
     const mediaTitle = document.getElementById('media-title');
     const mediaMetadata = document.getElementById('media-metadata');
@@ -15,20 +23,33 @@ document.addEventListener('DOMContentLoaded', function() {
     const progressPercentage = document.getElementById('progress-percentage');
     const tmdbLink = document.getElementById('tmdb-link');
     
+    // DOM Elements - Settings
     const settingsForm = document.getElementById('settings-form');
+    const preferredSourceSelect = document.getElementById('preferred-source');
+    const enableAutoSwitchingCheckbox = document.getElementById('enable-auto-switching');
     const vlcHostInput = document.getElementById('vlc-host');
     const vlcPortInput = document.getElementById('vlc-port');
     const vlcPasswordInput = document.getElementById('vlc-password');
+    const vlcPollingIntervalInput = document.getElementById('vlc-polling-interval');
+    const iinaPollingIntervalInput = document.getElementById('iina-polling-interval');
+    const iinaStatusPathsTextarea = document.getElementById('iina-status-paths');
+    const iinaSettingsGroup = document.getElementById('iina-settings');
     const discordClientIdInput = document.getElementById('discord-client-id');
     const tmdbApiKeyInput = document.getElementById('tmdb-api-key');
     const showApiKeyButton = document.getElementById('show-api-key');
     
+    // DOM Elements - Modals
     const setupInstructionsButton = document.getElementById('setup-instructions');
     const instructionsModal = document.getElementById('instructions-modal');
     const vlcSetupModal = document.getElementById('vlc-setup-modal');
     const testVlcButton = document.getElementById('test-vlc-connection');
     const downloadShortcutButton = document.getElementById('download-vlc-shortcut');
     const closeModalButtons = document.querySelectorAll('.close-btn, .modal-close-btn');
+
+    // Global state
+    let currentConfig = {};
+    let availableSources = [];
+    let currentSource = null;
 
     // Tab functionality
     const tabButtons = document.querySelectorAll('.tab-btn');
@@ -59,17 +80,18 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Socket.io event handlers
     socket.on('connect', () => {
-        console.log('Connected to VLCord server');
+        console.log('Connected to MediaCord server');
     });
-    
+
     socket.on('disconnect', () => {
-        console.log('Disconnected from VLCord server');
+        console.log('Disconnected from MediaCord server');
         setVLCStatus(false);
         setDiscordStatus(false);
     });
     
-    socket.on('vlcStatus', (status) => {
-        updateVLCStatus(status);
+    // Socket event handlers
+    socket.on('mediaStatus', (status) => {
+        updateMediaSourceStatus(status);
     });
     
     socket.on('discordStatus', (status) => {
@@ -77,22 +99,56 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     socket.on('config', (config) => {
+        currentConfig = config;
+        availableSources = config.availableSources || [];
+        
         // Update form values with current config
+        preferredSourceSelect.value = config.preferredSource || 'auto';
+        if (enableAutoSwitchingCheckbox) {
+            enableAutoSwitchingCheckbox.checked = config.enableAutoSourceSwitching !== false;
+        }
         vlcHostInput.value = config.vlcHost || 'localhost';
         vlcPortInput.value = config.vlcPort || '8080';
         vlcPasswordInput.value = config.vlcPassword || 'vlcpassword';
-        discordClientIdInput.value = config.discordClientId || '1392902149163319398';
+        vlcPollingIntervalInput.value = config.vlcPollingInterval || 1000;
+        iinaPollingIntervalInput.value = config.iinaPollingInterval || 2000;
+        if (config.iinaStatusPaths && config.iinaStatusPaths.length > 0) {
+            iinaStatusPathsTextarea.value = config.iinaStatusPaths.join('\n');
+        }
+        discordClientIdInput.value = config.discordClientId || '';
         tmdbApiKeyInput.value = config.tmdbApiKey || 'ccc1fa36a0821299ae4d7a6c155b442d';
+        
+        // Show IINA settings if IINA is available
+        updateIINASettingsVisibility();
+        
+        // Update source selection UI
+        updateSourceSelection();
+    });
+    
+    socket.on('sourceStatuses', (statuses) => {
+        availableSources = statuses.available || [];
+        currentSource = statuses.active;
+        updateSourceSelection();
     });
     
     // Settings save button
     const saveSettingsButton = document.getElementById('save-settings');
     if (saveSettingsButton) {
         saveSettingsButton.addEventListener('click', function() {
+            const iinaStatusPaths = iinaStatusPathsTextarea.value
+                .split('\n')
+                .map(p => p.trim())
+                .filter(p => p.length > 0);
+            
             const config = {
+                preferredSource: preferredSourceSelect.value,
+                enableAutoSourceSwitching: enableAutoSwitchingCheckbox ? enableAutoSwitchingCheckbox.checked : true,
                 vlcHost: vlcHostInput.value,
                 vlcPort: parseInt(vlcPortInput.value, 10),
                 vlcPassword: vlcPasswordInput.value,
+                vlcPollingInterval: parseInt(vlcPollingIntervalInput.value, 10),
+                iinaPollingInterval: parseInt(iinaPollingIntervalInput.value, 10),
+                iinaStatusPaths: iinaStatusPaths,
                 discordClientId: discordClientIdInput.value,
                 tmdbApiKey: tmdbApiKeyInput.value
             };
@@ -242,9 +298,41 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 4000);
     }
 
-    function updateVLCStatus(status) {
-        setVLCStatus(status.connected);
+    function updateMediaSourceStatus(status) {
+        // Update source info display
+        if (status.source) {
+            currentSource = status.source;
+            const sourceInfo = getSourceInfo(status.source);
+            mediaSourceName.textContent = sourceInfo.displayName;
+            mediaSourceIcon.src = sourceInfo.icon;
+        }
         
+        // Update connection status
+        if (mediaSourceText) {
+            if (status.connected) {
+                mediaSourceText.textContent = 'Connected';
+                mediaSourceText.className = 'status-connected';
+                
+                if (status.playing) {
+                    mediaSourceType.textContent = 'Playing';
+                } else if (status.paused) {
+                    mediaSourceType.textContent = 'Paused';
+                } else {
+                    mediaSourceType.textContent = 'Idle';
+                }
+            } else {
+                mediaSourceText.textContent = 'Disconnected';
+                mediaSourceText.className = 'status-disconnected';
+                mediaSourceType.textContent = 'Waiting for media player...';
+            }
+        }
+        
+        // Show switch button if multiple sources available
+        if (switchSourceBtn && availableSources.length > 1) {
+            switchSourceBtn.style.display = 'inline-block';
+        }
+        
+        // Update media display
         if (status.connected) {
             if (status.title) {
                 // Media is available
@@ -252,7 +340,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 // Update metadata display
                 if (status.metadata) {
-                    // Enhanced metadata from TMDb
                     const meta = status.metadata;
                     if (meta.type === 'movie') {
                         mediaMetadata.textContent = `${meta.year ? `(${meta.year}) • ` : ''}${meta.genres.slice(0, 3).join(', ')}`;
@@ -263,7 +350,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         mediaPoster.src = meta.posterUrl || 'assets/vlc.png';
                     }
                     
-                    // Update TMDb link
                     if (meta.tmdbUrl && tmdbLink) {
                         tmdbLink.href = meta.tmdbUrl;
                         tmdbLink.style.display = 'inline-block';
@@ -271,7 +357,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         tmdbLink.style.display = 'none';
                     }
                 } else {
-                    // Basic media info
                     mediaMetadata.textContent = status.mediaType || 'Unknown type';
                     mediaPoster.src = 'assets/vlc.png';
                     if (tmdbLink) {
@@ -283,22 +368,86 @@ document.addEventListener('DOMContentLoaded', function() {
                 const position = status.position || 0;
                 progressFill.style.width = `${position * 100}%`;
                 
-                // Format time display
                 const elapsed = formatTime(status.elapsed || 0);
                 const total = formatTime(status.length || 0);
                 progressTime.textContent = `${elapsed} / ${total}`;
-                
-                // Format percentage
                 progressPercentage.textContent = `${Math.round(position * 100)}%`;
                 
             } else {
-                // No media playing
                 resetMediaDisplay();
             }
         } else {
-            // Not connected to VLC
             resetMediaDisplay();
         }
+    }
+    
+    function getSourceInfo(sourceName) {
+        const sourceMap = {
+            'vlc': {
+                displayName: 'VLC Media Player',
+                icon: 'assets/vlc.png'
+            },
+            'iina': {
+                displayName: 'IINA',
+                icon: 'assets/vlc.png' // Use VLC icon as fallback, add IINA icon later
+            }
+        };
+        return sourceMap[sourceName] || { displayName: 'Media Player', icon: 'assets/vlc.png' };
+    }
+    
+    function updateSourceSelection() {
+        if (!sourceList) return;
+        
+        sourceList.innerHTML = '';
+        
+        if (availableSources.length > 1) {
+            sourceSelection.style.display = 'block';
+            
+            availableSources.forEach(source => {
+                const sourceCard = document.createElement('div');
+                sourceCard.className = 'source-card' + (source.name === currentSource ? ' active' : '');
+                sourceCard.innerHTML = `
+                    <h4>${source.displayName}</h4>
+                    <p>${source.description}</p>
+                    <small>Platform: ${source.platform}</small>
+                    ${source.name !== currentSource ? `<button class="switch-to-source-btn" data-source="${source.name}">Use This Source</button>` : '<span class="badge">Active</span>'}
+                `;
+                sourceList.appendChild(sourceCard);
+            });
+            
+            // Add event listeners to switch buttons
+            document.querySelectorAll('.switch-to-source-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const sourceName = this.getAttribute('data-source');
+                    socket.emit('switchMediaSource', sourceName);
+                });
+            });
+        } else {
+            sourceSelection.style.display = 'none';
+        }
+    }
+    
+    function updateIINASettingsVisibility() {
+        if (!iinaSettingsGroup) return;
+        
+        // Show IINA settings if IINA is available
+        const hasIINA = availableSources.some(s => s.name === 'iina');
+        iinaSettingsGroup.style.display = hasIINA ? 'block' : 'none';
+    }
+    
+    // Switch source button handler
+    if (switchSourceBtn) {
+        switchSourceBtn.addEventListener('click', function() {
+            socket.emit('getSourceStatuses');
+            if (sourceSelection) {
+                sourceSelection.style.display = sourceSelection.style.display === 'none' ? 'block' : 'none';
+            }
+        });
+    }
+
+    function updateVLCStatus(status) {
+        // Keep for backward compatibility, redirect to new function
+        updateMediaSourceStatus(status);
     }
     
     function updateDiscordStatus(status) {

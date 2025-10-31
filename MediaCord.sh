@@ -1,13 +1,13 @@
 #!/bin/bash
-echo "🚀 Starting VLCord..."
+echo "🚀 Starting MediaCord..."
 echo ""
 echo "📋 Prerequisites:"
-echo "  - VLC Media Player installed"
+echo "  - VLC or IINA (macOS) installed"
 echo "  - Discord running"
-echo "  - VLC HTTP interface enabled (port 8080, password: vlcpassword)"
+echo "  - Media player configured (see documentation)"
 echo ""
 echo "🌐 Web interface will be available at: http://localhost:7100"
-echo "🛑 Press Ctrl+C to stop VLCord"
+echo "🛑 Press Ctrl+C to stop MediaCord"
 echo ""
 
 # Get the directory where this script is located
@@ -17,5 +17,5 @@ cd "$DIR"
 node src/main.js
 
 echo ""
-echo "VLCord has stopped."
+echo "MediaCord has stopped."
 read -p "Press Enter to exit..."

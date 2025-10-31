@@ -2,7 +2,7 @@
 
 ## Supported Versions
 
-We provide security updates for the following versions of VLCord:
+We provide security updates for the following versions of MediaCord:
 
 | Version | Supported          |
 | ------- | ------------------ |
@@ -11,7 +11,7 @@ We provide security updates for the following versions of VLCord:
 
 ## Reporting a Vulnerability
 
-We take the security of VLCord seriously. If you believe you have found a security vulnerability, please report it to us as described below.
+We take the security of MediaCord seriously. If you believe you have found a security vulnerability, please report it to us as described below.
 
 ### Where to Report
 
@@ -56,7 +56,7 @@ Please include the following information in your report:
 
 ### Data Handling
 
-VLCord handles the following types of data:
+MediaCord handles the following types of data:
 
 - **Local Media Information**: File names, metadata from VLC
 - **TMDb API Data**: Movie/TV show information (public data)
@@ -79,15 +79,15 @@ VLCord handles the following types of data:
 
 ### Best Practices for Users
 
-- Keep VLCord updated to the latest version
+- Keep MediaCord updated to the latest version
 - Use strong passwords for VLC HTTP interface
 - Don't share your TMDb API key publicly
-- Run VLCord on trusted networks only
+- Run MediaCord on trusted networks only
 - Regularly review and rotate API keys
 
 ## Third-Party Dependencies
 
-VLCord relies on several third-party packages. We:
+MediaCord relies on several third-party packages. We:
 
 - Regularly audit dependencies for security vulnerabilities
 - Keep dependencies updated to their latest secure versions
@@ -98,7 +98,7 @@ VLCord relies on several third-party packages. We:
 
 For security-related questions or concerns that are not vulnerabilities, please contact:
 
-- Email: `security@vlcord.site`
+- Email: `security@mediacord.site`
 - GitHub Discussions: Use the Security category
 
-Thank you for helping keep VLCord and our users safe!
+Thank you for helping keep MediaCord and our users safe!

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VLCord - Starting...</title>
+    <title>MediaCord - Starting...</title>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -68,21 +68,21 @@
 <body>
     <div class="container">
         <div class="logo">🎵</div>
-        <h1>VLCord</h1>
+        <h1>MediaCord</h1>
         <div id="status">
             <div class="spinner"></div>
-            <p>Starting VLCord server...</p>
+            <p>Starting MediaCord server...</p>
             <p><small>This may take a few moments</small></p>
         </div>
         
         <div id="error-section" style="display: none;">
             <div class="error">
                 <h3>⚠️ Server Error</h3>
-                <p>VLCord server failed to start. This usually happens when:</p>
+                <p>MediaCord server failed to start. This usually happens when:</p>
                 <ul style="text-align: left; margin: 10px 0;">
                     <li>Port 7100 is already in use</li>
                     <li>Node.js dependencies are missing</li>
-                    <li>VLC is not properly configured</li>
+                    <li>Media player is not properly configured</li>
                 </ul>
             </div>
             <button class="retry-btn" onclick="retryConnection()">Retry Connection</button>
@@ -99,7 +99,7 @@
                 const response = await fetch('http://localhost:7100');
                 if (response.ok) {
                     document.getElementById('status').innerHTML = 
-                        '<p>✅ Server is ready!</p><p>Redirecting to VLCord...</p>';
+                        '<p>✅ Server is ready!</p><p>Redirecting to MediaCord...</p>';
                     window.location.href = 'http://localhost:7100';
                     return true;
                 }
@@ -116,7 +116,7 @@
                 
                 retryCount++;
                 document.querySelector('#status p').textContent = 
-                    `Starting VLCord server... (${retryCount}/${maxRetries})`;
+                    `Starting MediaCord server... (${retryCount}/${maxRetries})`;
                 
                 await new Promise(resolve => setTimeout(resolve, 2000));
             }
@@ -137,15 +137,15 @@
         function openTroubleshooting() {
             // Create a simple troubleshooting guide
             const troubleshoot = `
-VLCord Troubleshooting:
+MediaCord Troubleshooting:
 
-1. Close any other VLCord instances
-2. Make sure VLC is installed and configured with HTTP interface
+1. Close any other MediaCord instances
+2. Make sure your media player (VLC or IINA) is installed and configured
 3. Check if port 7100 is available
-4. Try running VLCord from command line to see errors
+4. Try running MediaCord from command line to see errors
 
 Command line usage:
-- Windows: Open Command Prompt, navigate to VLCord folder, run "node src/main.js"
+- Windows: Open Command Prompt, navigate to MediaCord folder, run "node src/main.js"
 - Check the console output for specific error messages
 
 If issues persist, check the GitHub repository for support.

@@ -3,9 +3,6 @@ import { EventEmitter } from 'events';
 import DiscordRPC from 'discord-rpc';
 import * as animeHandler from './anime-titles.js';
 
-// Register the application with Discord - this is critical for RPC to work
-DiscordRPC.register(process.env.DISCORD_CLIENT_ID || '1392902149163319398');
-
 export class DiscordPresence extends EventEmitter {
   constructor(config) {
     super();
@@ -48,7 +45,7 @@ export class DiscordPresence extends EventEmitter {
     try {
       console.log('Initializing Discord RPC with client ID:', this.config.clientId);
       
-      // CRITICAL FIX: Register the client ID with Discord RPC
+      // Register the client ID with Discord RPC
       // This step is REQUIRED for activity type (Watching) to work correctly
       DiscordRPC.register(this.config.clientId);
       
@@ -302,7 +299,7 @@ export class DiscordPresence extends EventEmitter {
       // Add note about buttons if they're not showing
       if (rpcActivity.buttons && rpcActivity.buttons.length > 0 && !this.buttonWarningShown) {
         console.log('📝 Note: Discord buttons may not appear if the Discord application is not verified.');
-        console.log('   This is a Discord limitation, not a VLCord issue.');
+        console.log('   This is a Discord limitation, not a MediaCord issue.');
         console.log('   The TMDb links are still being sent to Discord correctly.');
         this.buttonWarningShown = true;
       }
@@ -312,15 +309,15 @@ export class DiscordPresence extends EventEmitter {
       // WATCHING FIX: Use the raw RPC request method instead of setActivity
       // This forces Discord to properly show "Watching" instead of "Playing"
       
-      // Always use "VLCord" as the application name shown in Discord
-      const appName = "VLCord";
-      
-      // NEW FORMAT: Show "Watching [Movie Title]" instead of "Watching VLCord"
-      // For this format, we'll use the movie title as the app name instead of "VLCord"
+      // Always use "MediaCord" as the application name shown in Discord
+      const appName = "MediaCord";
+
+      // NEW FORMAT: Show "Watching [Movie Title]" instead of "Watching MediaCord"
+      // For this format, we'll use the movie title as the app name instead of "MediaCord"
       // This will make Discord show "Watching [Movie Title]"
       
       // Get the actual media title for the "Watching" display
-      // Always use the actual media title instead of "VLCord"
+      // Always use the actual media title instead of "MediaCord"
       // Get the actual media title for the "Watching" display
       // For TV shows, use the show title, not the episode title
       let mediaTitle = null;
@@ -429,12 +426,12 @@ export class DiscordPresence extends EventEmitter {
           // CRITICAL: These properties are REQUIRED together to make Discord show "Watching"
           // NOTE: The application name shown in Discord (what appears after "Watching") 
           // is controlled by your Discord Application's name in the Developer Portal.
-          // To change this from "Watching VLCord" to something else:
+          // To change this from "Watching MediaCord" to something else:
           // 1. Go to https://discord.com/developers/applications
-          // 2. Select your VLCord application
+          // 2. Select your MediaCord application
           // 3. Change the name to something generic like "Media" or "Now Watching"
           // 4. Save your changes
-          // Discord will then show "Watching Media" instead of "Watching VLCord"
+          // Discord will then show "Watching Media" instead of "Watching MediaCord"
           // See APP_NAME_SOLUTION.md for more details
           
           application_id: this.config.clientId,
