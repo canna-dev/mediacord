@@ -25,6 +25,7 @@ export class ConfigManager {
       enableAutoSourceSwitching: true,
       
       // External service settings
+      discordClientId: '',
       tmdbApiKey: 'ccc1fa36a0821299ae4d7a6c155b442d'
     };
     
@@ -135,6 +136,7 @@ export class ConfigManager {
       vlcPollingInterval: this.config.vlcPollingInterval,
       iinaPollingInterval: this.config.iinaPollingInterval,
       iinaStatusPaths: this.config.iinaStatusPaths,
+      discordClientId: this.config.discordClientId,
       tmdbApiKey: this.config.tmdbApiKey
     };
   }

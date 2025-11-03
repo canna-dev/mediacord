@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [2.1.3] - 2025-11-03
+
+### Fixed
+- Discord client ID not being loaded from config on macOS
+- Missing Discord client ID validation and error messages
+- Config manager now properly includes discordClientId in default config
+- Better error messaging when Discord RPC fails to connect
+
 ## [2.1.0] - 2025-11-03
 
 ### Changed

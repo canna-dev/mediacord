@@ -42,6 +42,18 @@ export class DiscordPresence extends EventEmitter {
       this.reconnectTimeout = null;
     }
     
+    // Validate client ID before attempting to connect
+    if (!this.config.clientId || this.config.clientId.trim() === '' || this.config.clientId === 'YOUR_DISCORD_CLIENT_ID_HERE') {
+      console.error('Discord RPC initialization failed: Invalid or missing Discord Client ID');
+      console.error('Please configure your Discord Client ID in:');
+      console.error('  1. The .env file (DISCORD_CLIENT_ID=...)');
+      console.error('  2. The web interface at Settings tab');
+      console.error('  3. The mediacord-config.json file');
+      this.connected = false;
+      this.emit('connectionUpdate', this.getConnectionStatus());
+      return;
+    }
+    
     try {
       console.log('Initializing Discord RPC with client ID:', this.config.clientId);
       
