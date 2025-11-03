@@ -132,7 +132,8 @@ export class DiscordPresence extends EventEmitter {
       connected: this.connected,
       clientId: this.config.clientId,
       reconnectAttempts: this.reconnectAttempts,
-      maxReconnectAttempts: this.maxReconnectAttempts
+      maxReconnectAttempts: this.maxReconnectAttempts,
+      username: this.discordRpc && this.discordRpc.user ? this.discordRpc.user.username : null
     };
   }
   
@@ -520,26 +521,27 @@ export class DiscordPresence extends EventEmitter {
     description = movie.overview || (movie.genres ? movie.genres.join(', ') : 'No description available');
     
     // Create the activity object with discord-rpc structure
-    // Exactly like the format in the screenshot
+    // Use IMDb for user-facing button if available
+    let buttonUrl = null;
+    let buttonLabel = null;
+    if (movie.imdbId && movie.imdbId.length > 0) {
+      buttonUrl = `https://www.imdb.com/title/${movie.imdbId}/`;
+      buttonLabel = 'View on IMDb';
+    } else if (movie.tmdbUrl) {
+      buttonUrl = movie.tmdbUrl;
+      buttonLabel = 'View on TMDb';
+    }
     return {
-      // Just like the screenshot:
-      // Year and type as main details line (e.g. "2010 • movie") 
       details: details,
-      
-      // Movie description as secondary line (from TMDb)
-      state: state, 
-      
-      // Use movie poster as large image
+      state: state,
       largeImageKey: movie.posterUrl || 'vlc',
-      
-      // Just use the movie title as hover text for simplicity
       largeImageText: movie.title || 'Movie',
       smallImageKey: isPlaying ? 'play' : 'pause',
       smallImageText: isPlaying ? 'Watching' : 'Paused',
       startTimestamp: isPlaying ? startTimestamp : undefined,
       endTimestamp: isPlaying ? endTimestamp : undefined,
-      buttons: movie.tmdbUrl ? [
-        { label: 'View on TMDb', url: movie.tmdbUrl }
+      buttons: buttonUrl ? [
+        { label: buttonLabel, url: buttonUrl }
       ] : undefined
     };
   }

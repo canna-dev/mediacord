@@ -234,12 +234,25 @@ export class MediaSourceManager extends EventEmitter {
     console.log('Starting Media Source Manager...');
     console.log(`Available sources: ${this.getAvailableSources().map(s => s.name).join(', ')}`);
     console.log(`Preferred source: ${this.preferredSource}`);
-    
-    // Start all available monitors
-    this.vlcMonitor.start();
-    
+
+    // Start IINA if available
+    let iinaStarted = false;
     if (this.iinaMonitor.isAvailable()) {
       this.iinaMonitor.start();
+      iinaStarted = true;
+    }
+
+    // Only start VLC if:
+    // - Preferred source is 'vlc'
+    // - Preferred source is 'auto' and IINA is not available/connected
+    const shouldStartVLC = (
+      this.preferredSource === 'vlc' ||
+      (this.preferredSource === 'auto' && (!iinaStarted || !this.iinaMonitor.getCurrentStatus().connected))
+    );
+    if (shouldStartVLC) {
+      this.vlcMonitor.start();
+    } else {
+      this.vlcMonitor.stop();
     }
   }
 

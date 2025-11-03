@@ -10,6 +10,7 @@ import { DiscordPresence } from './discord-presence.js';
 import { ConfigManager } from './config-manager.js';
 import { VLCSetupHelper } from './vlc-setup-helper.js';
 import { logger } from './logger.js';
+import pkg from '../package.json' assert { type: "json" };
 
 // Load environment variables
 dotenv.config();
@@ -83,11 +84,11 @@ app.get('/health', (req, res) => {
     timestamp: Date.now(),
     platform: process.platform,
     nodeVersion: process.version,
-    version: '2.0.0',
+  version: pkg.version,
     sources: {
-      vlc: sourceManager?.vlcMonitor?.currentStatus?.connected || false,
-      iina: sourceManager?.iinaMonitor?.currentStatus?.connected || false,
-      activeSource: sourceManager?.activeSource || 'none'
+      vlc: mediaSourceManager?.vlcMonitor?.currentStatus?.connected || false,
+      iina: mediaSourceManager?.iinaMonitor?.currentStatus?.connected || false,
+      activeSource: mediaSourceManager?.activeSource || 'none'
     },
     discord: {
       connected: discordPresence?.connected || false,
@@ -95,6 +96,15 @@ app.get('/health', (req, res) => {
     }
   };
   res.json(health);
+});
+// Recent logs endpoint for debug info
+app.get('/logs', (req, res) => {
+  try {
+    const logs = logger.getRecentLogs();
+    res.json({ logs });
+  } catch (err) {
+    res.status(500).json({ error: 'Could not retrieve logs' });
+  }
 });
 
 // API endpoints for direct Discord control
@@ -308,7 +318,6 @@ process.on('SIGINT', () => {
   cleanup();
   process.exit(0);
 });
-
 process.on('SIGTERM', () => {
   logger.info('Received SIGTERM, shutting down...');
   cleanup();

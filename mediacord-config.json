@@ -1,0 +1,12 @@
+{
+  "vlcHost": "localhost",
+  "vlcPort": 8080,
+  "vlcPassword": "vlcpassword",
+  "vlcPollingInterval": 500,
+  "iinaPollingInterval": 500,
+  "iinaStatusPaths": [],
+  "preferredSource": "vlc",
+  "enableAutoSourceSwitching": true,
+  "tmdbApiKey": "ccc1fa36a0821299ae4d7a6c155b442d",
+  "discordClientId": ""
+}

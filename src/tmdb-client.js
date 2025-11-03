@@ -491,7 +491,8 @@ export class TMDbClient {
       backdropPath: movie.backdrop_path,
       posterUrl: movie.poster_path ? `${this.imageBaseUrl}/w500${movie.poster_path}` : null,
       backdropUrl: movie.backdrop_path ? `${this.imageBaseUrl}/w1280${movie.backdrop_path}` : null,
-      tmdbUrl: `https://www.themoviedb.org/movie/${movie.id}`
+      tmdbUrl: `https://www.themoviedb.org/movie/${movie.id}`,
+      imdbId: movie.imdb_id || (movie.external_ids && movie.external_ids.imdb_id) || ''
     };
   }
 

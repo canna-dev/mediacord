@@ -1,3 +1,183 @@
+.header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0;
+    margin-bottom: 0;
+    position: relative;
+    min-height: 64px;
+}
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+.platform-info {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 1rem;
+    color: var(--text-muted);
+    background: rgba(0,0,0,0.12);
+    padding: 4px 16px 4px 10px;
+    border-radius: 18px;
+    font-weight: 500;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    height: 32px;
+}
+.os-icon {
+    font-size: 1.25rem;
+    margin-right: 4px;
+    vertical-align: middle;
+    display: flex;
+    align-items: center;
+}
+.theme-toggle {
+    background: var(--bg-tertiary);
+    color: var(--accent-primary);
+    border: 1.5px solid var(--border-color);
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    margin-left: auto;
+    margin-right: 8px;
+    cursor: pointer;
+    transition: var(--transition);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+    position: relative;
+}
+.theme-toggle:hover, .theme-toggle:focus {
+    background: var(--accent-primary);
+    color: #fff;
+    outline: none;
+    box-shadow: 0 4px 16px rgba(88,101,242,0.15);
+}
+.app-header {
+    text-align: center;
+    margin-bottom: 30px;
+    padding: 24px 32px 18px 32px;
+    background: var(--bg-secondary);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    position: relative;
+}
+.tagline {
+    color: var(--text-secondary);
+    font-size: 1.15rem;
+    margin: 0;
+    margin-top: 12px;
+    text-align: center;
+    letter-spacing: 0.01em;
+}
+.header-controls {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-left: 18px;
+}
+.platform-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1rem;
+    color: var(--text-muted);
+    background: rgba(0,0,0,0.08);
+    padding: 4px 12px;
+    border-radius: 16px;
+}
+.os-icon {
+    font-size: 1.2rem;
+    margin-right: 4px;
+    vertical-align: middle;
+}
+.imdb-btn {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 8px 16px;
+    background: var(--accent-primary);
+    color: white;
+    text-decoration: none;
+    border-radius: calc(var(--radius) / 2);
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: var(--transition);
+    align-self: flex-start;
+    box-shadow: 0 1px 4px rgba(88,101,242,0.12);
+    border: none;
+}
+.imdb-btn:hover {
+    background: var(--accent-hover);
+    color: #fff;
+    text-decoration: none;
+}
+/* Light Mode Variables */
+.light-mode {
+    --bg-primary: #f5f6fa;
+    --bg-secondary: #e3e6ee;
+    --bg-tertiary: #f8f9fb;
+    --bg-modal: #fff;
+    --text-primary: #23272a;
+    --text-secondary: #4f5660;
+    --text-muted: #99aab5;
+    --accent-primary: #5865f2;
+    --accent-hover: #4752c4;
+    --border-color: #d1d5db;
+    --success: #57f287;
+    --warning: #fee75c;
+    --error: #ed4245;
+}
+
+body.light-mode {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+}
+
+/* Theme Toggle Button */
+.theme-toggle {
+    background: var(--bg-tertiary);
+    color: var(--accent-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    margin-left: 16px;
+    cursor: pointer;
+    transition: var(--transition);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+.theme-toggle:hover {
+    background: var(--accent-primary);
+    color: #fff;
+}
+/* Overlay Styles */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(32,34,37,0.85);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: all;
+}
+.overlay-content {
+    text-align: center;
+    color: var(--text-primary);
+}
+.overlay .loading-spinner {
+    margin: 0 auto 20px auto;
+}
 /* MediaCord Interface Styles - Clean Modern Discord-Inspired Design */
 :root {
     --bg-primary: #36393f;

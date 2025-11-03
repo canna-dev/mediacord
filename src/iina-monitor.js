@@ -242,39 +242,39 @@ export class IINAMonitor extends EventEmitter {
       if (!fs.existsSync(filePath)) {
         return false;
       }
-      
+
       const stat = fs.statSync(filePath);
       const currentTime = Date.now();
-      
+
       // Check if file is recent (within last 10 seconds)
       if (currentTime - stat.mtime.getTime() > 10000) {
         return false; // File is too old
       }
-      
+
       const fileContent = fs.readFileSync(filePath, 'utf8').trim();
       if (!fileContent) {
         return false;
       }
-      
+
       // Skip if content hasn't changed
       if (fileContent === this.lastFileData) {
         return this.currentStatus.connected;
       }
-      
+
       this.lastFileData = fileContent;
-      
+
       // Parse the JSON status
       const statusData = JSON.parse(fileContent);
-      
+
       // Validate required fields
       if (!statusData || typeof statusData !== 'object') {
         return false;
       }
-      
+
       return this.processStatusData(statusData);
-      
+
     } catch (error) {
-      // Silently ignore parse errors (file might be being written)
+      this.emit('errorFeedback', { type: 'iina', source: 'IINA', message: error.message });
       return false;
     }
   }

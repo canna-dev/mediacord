@@ -131,12 +131,14 @@ export class VLCMonitor extends EventEmitter {
         mediaTitle = possibleTitles[0] || '';
       }
       
-      // If no media is playing or title is empty
+      // If no media is playing or title is empty, but VLC is reachable, keep connected=true
       if (!mediaTitle || vlcData.state === 'stopped') {
         this.currentStatus.title = null;
         this.currentStatus.originalTitle = null;
         this.currentStatus.mediaType = null;
         this.currentStatus.metadata = null;
+        // Remain connected even if idle/stopped
+        this.currentStatus.connected = true;
       } else {
         // Collect all possible title sources for best detection
         const possibleTitles = [mediaTitle];
@@ -267,8 +269,8 @@ export class VLCMonitor extends EventEmitter {
         }
       }
       
-      // Emit status update event
-      this.emit('statusUpdate', this.getCurrentStatus());
+  // Emit status update event
+  this.emit('statusUpdate', this.getCurrentStatus());
       
       // Log connection established
       if (!wasConnected) {

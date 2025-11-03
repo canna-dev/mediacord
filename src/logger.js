@@ -13,13 +13,18 @@ export class Logger {
     };
     this.level = level;
     this.prefix = prefix;
+    this.logBuffer = [];
+    this.maxBuffer = 20;
   }
 
   _log(emoji, level, ...args) {
     if (this.levels[this.level] >= this.levels[level]) {
       const timestamp = new Date().toISOString().split('T')[1].split('.')[0];
       const prefixStr = this.prefix ? `[${this.prefix}]` : '';
-      console[level === 'debug' ? 'log' : level](`${emoji} ${timestamp} ${prefixStr}`, ...args);
+      const msg = `${emoji} ${timestamp} ${prefixStr} ${args.join(' ')}`;
+      this.logBuffer.push({ level, msg, time: Date.now() });
+      if (this.logBuffer.length > this.maxBuffer) this.logBuffer.shift();
+      console[level === 'debug' ? 'log' : level](msg);
     }
   }
 
@@ -41,6 +46,10 @@ export class Logger {
 
   success(...args) {
     this._log('✅', 'info', ...args);
+  }
+
+  getRecentLogs() {
+    return this.logBuffer.slice(-this.maxBuffer);
   }
 }
 

@@ -5,10 +5,19 @@ All notable changes to MediaCord will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+
+## [2.1.0] - 2025-11-03
+
+### Changed
+- Major UI/UX polish for header, theme toggle, OS badge
+- Debug info now includes backend logs, config, sources, Discord, and media info
+- Improved error handling and log buffering
+- Updated all version references to use package.json
+- Various bug fixes and code refactors
+
+## [2.0.0] - 2025-11-03
 
 ### Added
-
 - GitHub deployment preparation
 - Comprehensive documentation (README, CONTRIBUTING, SECURITY)
 - GitHub Actions CI/CD pipeline
@@ -17,27 +26,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Code quality checks and linting
 
 ### Changed
-
 - Complete UI redesign with Discord-inspired theme
 - Simplified web interface with tabbed navigation
 - Improved media status display
 - Enhanced error handling and user feedback
 
 ### Removed
-
 - Discord Rich Presence preview section (redundant)
 - Development and test files from distribution
 - Unnecessary dependencies and bloat
 
 ### Fixed
-
 - title-cleaner.js export/import compatibility
 - Web UI tab functionality
 - Socket.io connection handling
 - Media status synchronization
 - Discord Rich Presence accuracy
 
-## [1.0.0] - Initial Release
+## [Unreleased]
 
 ### Core Features
 

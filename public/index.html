@@ -9,10 +9,32 @@
 </head>
 <body>
     <div class="app-container">
+        <!-- Loading/Disconnected Overlays -->
+        <div id="loading-overlay" class="overlay" style="display:none;">
+            <div class="overlay-content">
+                <div class="loading-spinner"></div>
+                <div id="loading-message">Connecting to MediaCord...</div>
+            </div>
+        </div>
+        <div id="disconnected-overlay" class="overlay" style="display:none;">
+            <div class="overlay-content">
+                <div class="loading-spinner"></div>
+                <div id="disconnected-message">Disconnected from MediaCord server</div>
+            </div>
+        </div>
         <header class="app-header">
-            <div class="logo-container">
-                <img src="assets/logo.png" alt="MediaCord Logo" class="logo">
-                <h1>MediaCord</h1>
+            <div class="header-row">
+                <div class="logo-container">
+                    <img src="assets/logo.png" alt="MediaCord Logo" class="logo">
+                    <h1>MediaCord</h1>
+                    <span id="platform-info" class="platform-info">
+                        <span id="os-icon" class="os-icon" aria-label="OS" title="Operating System"></span>
+                        <span id="os-label"></span>
+                    </span>
+                </div>
+                <button id="theme-toggle" class="theme-toggle" title="Toggle dark/light mode">
+                    <span id="theme-icon" aria-label="Theme">🌙</span>
+                </button>
             </div>
             <p class="tagline">Universal Media Player Discord Rich Presence</p>
         </header>
@@ -20,8 +42,8 @@
         <main class="main-content">
             <!-- Navigation Tabs -->
             <nav class="tabs-nav">
-                <button class="tab-btn active" data-tab="overview">Overview</button>
-                <button class="tab-btn" data-tab="settings">Settings</button>
+                <button class="tab-btn active" data-tab="overview" tabindex="0" aria-label="Overview" title="Overview">Overview</button>
+                <button class="tab-btn" data-tab="settings" tabindex="0" aria-label="Settings" title="Settings">Settings</button>
             </nav>
 
             <!-- Overview Tab Content -->
@@ -36,6 +58,7 @@
                         </div>
                         <div class="status-controls">
                             <button id="switch-source-btn" class="switch-btn" style="display: none;">Switch Source</button>
+                            <button id="switch-source-btn" class="switch-btn" style="display: none;" tabindex="0" aria-label="Switch Media Source" title="Switch Media Source">Switch Source</button>
                         </div>
                     </div>
                     <div class="status-item" id="discord-status">
@@ -43,6 +66,10 @@
                         <div class="status-info">
                             <h3>Discord</h3>
                             <p id="discord-status-text">Disconnected</p>
+                            <span id="discord-account-info" class="discord-account-info" style="display:none;"></span>
+                        </div>
+                        <div class="status-controls">
+                            <button id="discord-reconnect-btn" class="switch-btn" style="display:none;" tabindex="0" aria-label="Reconnect Discord" title="Reconnect Discord">Reconnect</button>
                         </div>
                     </div>
                 </div>
@@ -71,7 +98,8 @@
                                     <span id="progress-percentage">0%</span>
                                 </div>
                             </div>
-                            <a href="#" id="tmdb-link" class="tmdb-link" target="_blank" rel="noopener">View on TMDb</a>
+                            <a href="#" id="imdb-link" class="imdb-link imdb-btn" target="_blank" rel="noopener" style="display:none;">View on IMDb</a>
+                            <a href="#" id="tmdb-link" class="tmdb-link" target="_blank" rel="noopener" style="display:none;">View on TMDb</a>
                         </div>
                     </div>
                 </section>
@@ -82,78 +110,66 @@
                 <section class="settings-section">
                     <h2>Settings</h2>
                     <div id="settings-form">
-                        <div class="settings-group">
+                        <button id="advanced-toggle" class="switch-btn" type="button" aria-label="Show advanced settings" title="Show advanced settings" style="margin-bottom:16px;">Show Advanced Settings</button>
+                        <!-- Always visible basic settings -->
+                        <div class="form-row">
                             <h3>Media Source Preferences</h3>
-                            <div class="form-row">
-                                <label for="preferred-source">Preferred Source:</label>
-                                <select id="preferred-source">
-                                    <option value="auto">Auto (detect best available)</option>
-                                    <option value="vlc">VLC Media Player</option>
-                                    <option value="iina">IINA (macOS only)</option>
-                                </select>
-                            </div>
-                            <div class="form-row">
-                                <label>
-                                    <input type="checkbox" id="enable-auto-switching">
-                                    Enable automatic source switching
-                                </label>
-                            </div>
+                            <label for="preferred-source">Preferred Source:</label>
+                            <select id="preferred-source">
+                                <option value="auto">Auto (detect best available)</option>
+                                <option value="vlc">VLC Media Player</option>
+                                <option value="iina">IINA (macOS only)</option>
+                            </select>
                         </div>
-
-                        <div class="settings-group">
+                        <div class="form-row">
+                            <label>
+                                <input type="checkbox" id="enable-auto-switching">
+                                Enable automatic source switching
+                            </label>
+                        </div>
+                        <div class="form-row">
                             <h3>VLC Connection</h3>
-                            <div class="form-row">
-                                <label for="vlc-host">Host:</label>
-                                <input type="text" id="vlc-host" value="localhost">
-                            </div>
-                            <div class="form-row">
-                                <label for="vlc-port">Port:</label>
-                                <input type="number" id="vlc-port" value="8080">
-                            </div>
-                            <div class="form-row">
-                                <label for="vlc-password">Password:</label>
-                                <input type="password" id="vlc-password" value="vlcpassword">
-                            </div>
-                            <div class="form-row">
-                                <label for="vlc-polling-interval">Polling Interval (ms):</label>
-                                <input type="number" id="vlc-polling-interval" value="1000" min="500" max="5000">
-                            </div>
+                            <label for="vlc-host">Host:</label>
+                            <input type="text" id="vlc-host" value="localhost">
                         </div>
-
+                        <div class="form-row">
+                            <label for="vlc-port">Port:</label>
+                            <input type="number" id="vlc-port" value="8080">
+                        </div>
+                        <div class="form-row">
+                            <label for="vlc-password">Password:</label>
+                            <input type="password" id="vlc-password" value="vlcpassword">
+                        </div>
+                        <!-- Advanced settings group -->
+                        <div class="settings-group">
+                            <label for="vlc-polling-interval">VLC Polling Interval (ms):</label>
+                            <input type="number" id="vlc-polling-interval" value="1000" min="500" max="5000">
+                        </div>
                         <div class="settings-group" id="iina-settings" style="display: none;">
                             <h3>IINA Settings</h3>
-                            <div class="form-row">
-                                <label for="iina-polling-interval">Polling Interval (ms):</label>
-                                <input type="number" id="iina-polling-interval" value="2000" min="500" max="10000">
-                            </div>
-                            <div class="form-row">
-                                <label for="iina-status-paths">Custom Status File Paths (one per line):</label>
-                                <textarea id="iina-status-paths" rows="3" placeholder="Leave empty to use default locations"></textarea>
-                                <small class="help-text">Default locations: ~/status.json, IINA plugin data directories</small>
-                            </div>
+                            <label for="iina-polling-interval">IINA Polling Interval (ms):</label>
+                            <input type="number" id="iina-polling-interval" value="2000" min="500" max="10000">
+                            <label for="iina-status-paths">Custom Status File Paths (one per line):</label>
+                            <textarea id="iina-status-paths" rows="3" placeholder="Leave empty to use default locations"></textarea>
+                            <small class="help-text">Default locations: ~/status.json, IINA plugin data directories</small>
                         </div>
-
                         <div class="settings-group">
                             <h3>Discord Integration</h3>
-                            <div class="input-group">
-                                <label for="discord-client-id">Client ID:</label>
-                                <input type="text" id="discord-client-id" placeholder="Enter your Discord Client ID">
-                            </div>
+                            <label for="discord-client-id">Client ID:</label>
+                            <input type="text" id="discord-client-id" placeholder="Enter your Discord Client ID">
                         </div>
-
                         <div class="settings-group">
                             <h3>TMDb Integration</h3>
-                            <div class="form-row">
-                                <label for="tmdb-api-key">API Key:</label>
-                                <div class="input-group">
-                                    <input type="password" id="tmdb-api-key" value="ccc1fa36a0821299ae4d7a6c155b442d">
-                                    <button type="button" id="show-api-key" class="show-btn">Show</button>
-                                </div>
+                            <label for="tmdb-api-key">API Key:</label>
+                            <div class="input-group">
+                                <input type="password" id="tmdb-api-key" value="ccc1fa36a0821299ae4d7a6c155b442d">
+                                <button type="button" id="show-api-key" class="show-btn">Show</button>
                             </div>
                         </div>
                         
                         <div class="form-buttons">
                             <button type="button" id="save-settings" class="save-btn">Save Settings</button>
+                            <button type="button" id="reset-settings" class="reset-btn" style="margin-left:12px;">Reset to Defaults</button>
                         </div>
                     </div>
                 </section>
@@ -161,10 +177,14 @@
         </main>
 
         <footer class="app-footer">
+            <div id="aria-live-region" aria-live="polite" style="position:absolute;left:-9999px;"></div>
             <p>MediaCord - Universal Media Player Discord Rich Presence</p>
+            <p id="version-info" class="version-info" style="margin-bottom:8px; color:var(--text-muted); font-size:0.95rem;"></p>
             <p class="footer-links">
                 <a href="https://github.com/canna-dev/mediacord" target="_blank" rel="noopener">GitHub</a> | 
-                <a href="#" id="setup-instructions">Setup Instructions</a>
+                <a href="#" id="setup-instructions">Setup Instructions</a> | 
+                <a href="changelog.html" id="changelog-link">Changelog</a> | 
+                <a href="#" id="copy-debug">Copy Debug Info</a>
             </p>
         </footer>
         
@@ -258,6 +278,6 @@
     </div>
 
     <script src="/socket.io/socket.io.js"></script>
-    <script src="js/app.js"></script>
+    <script type="module" src="js/app.js"></script>
 </body>
 </html>

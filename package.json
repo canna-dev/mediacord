@@ -1,6 +1,6 @@
 {
   "name": "mediacord",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Universal Discord Rich Presence for VLC, IINA, and other media players with automatic movie/TV show detection",
   "main": "src/main.js",
   "type": "module",
