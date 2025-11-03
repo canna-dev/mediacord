@@ -10,7 +10,8 @@ import { DiscordPresence } from './discord-presence.js';
 import { ConfigManager } from './config-manager.js';
 import { VLCSetupHelper } from './vlc-setup-helper.js';
 import { logger } from './logger.js';
-import pkg from '../package.json' assert { type: "json" };
+import fs from 'fs';
+const pkg = JSON.parse(fs.readFileSync(new URL('../package.json', import.meta.url)));
 
 // Load environment variables
 dotenv.config();
