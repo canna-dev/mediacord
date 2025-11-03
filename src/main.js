@@ -25,7 +25,7 @@ const configManager = new ConfigManager();
 const baseConfig = configManager.getConfig();
 
 // Configuration with fallback to env vars
-const PORT = process.env.PORT || 7100;
+const PORT = process.env.PORT || 7200;
 const mediaConfig = configManager.getMediaSourceConfig();
 
 // Override with environment variables if present
